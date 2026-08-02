@@ -12,7 +12,6 @@ class GrayscaleReceiver : BroadcastReceiver() {
         
         when (action) {
             "com.greyscale.scheduler.ENABLE" -> {
-                // Check if today is Sunday-Thursday (enable days)
                 val dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
                 val shouldEnable = dayOfWeek in listOf(
                     Calendar.SUNDAY,
@@ -23,12 +22,11 @@ class GrayscaleReceiver : BroadcastReceiver() {
                 )
                 
                 if (shouldEnable) {
-                    GrayscaleController.enableGrayscale(context)
+                    GrayscaleController.setGrayscale(context, true)
                 }
             }
             
             "com.greyscale.scheduler.DISABLE" -> {
-                // Check if today is Monday-Friday (disable days)
                 val dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
                 val shouldDisable = dayOfWeek in listOf(
                     Calendar.MONDAY,
@@ -39,9 +37,10 @@ class GrayscaleReceiver : BroadcastReceiver() {
                 )
                 
                 if (shouldDisable) {
-                    GrayscaleController.disableGrayscale(context)
+                    GrayscaleController.setGrayscale(context, false)
                 }
             }
+
         }
     }
 }

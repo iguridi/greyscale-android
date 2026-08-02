@@ -15,55 +15,28 @@ object AlarmScheduler {
     private const val REQUEST_CODE_DISABLE = 1002
     
     fun scheduleAllAlarms(context: Context) {
-        scheduleEnableAlarm(context)
-        scheduleDisableAlarm(context)
+        scheduleAlarm(context, 20, 0, ACTION_ENABLE, REQUEST_CODE_ENABLE)
+        scheduleAlarm(context, 6, 0, ACTION_DISABLE, REQUEST_CODE_DISABLE)
     }
     
-    private fun scheduleEnableAlarm(context: Context) {
+    private fun scheduleAlarm(context: Context, hour: Int, minute: Int, action: String, requestCode: Int) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, GrayscaleReceiver::class.java).apply {
-            action = ACTION_ENABLE
-        }
-        
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            REQUEST_CODE_ENABLE,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        
-        // Schedule daily at 8:00 PM (20:00)
-        val calendar = getNextAlarmTime(20, 0) // 8:00 PM
-        
+        val calendar = getNextAlarmTime(hour, minute)
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
             AlarmManager.INTERVAL_DAY,
-            pendingIntent
+            pendingIntentFor(context, action, requestCode)
         )
     }
     
-    private fun scheduleDisableAlarm(context: Context) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    private fun pendingIntentFor(context: Context, action: String, requestCode: Int): PendingIntent {
         val intent = Intent(context, GrayscaleReceiver::class.java).apply {
-            action = ACTION_DISABLE
+            this.action = action
         }
-        
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            REQUEST_CODE_DISABLE,
-            intent,
+        return PendingIntent.getBroadcast(
+            context, requestCode, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        
-        // Schedule daily at 6:00 AM (06:00)
-        val calendar = getNextAlarmTime(6, 0) // 6:00 AM
-        
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
         )
     }
     
@@ -85,29 +58,7 @@ object AlarmScheduler {
     
     fun cancelAllAlarms(context: Context) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        
-        val enableIntent = Intent(context, GrayscaleReceiver::class.java).apply {
-            action = ACTION_ENABLE
-        }
-        val disableIntent = Intent(context, GrayscaleReceiver::class.java).apply {
-            action = ACTION_DISABLE
-        }
-        
-        val enablePendingIntent = PendingIntent.getBroadcast(
-            context,
-            REQUEST_CODE_ENABLE,
-            enableIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        
-        val disablePendingIntent = PendingIntent.getBroadcast(
-            context,
-            REQUEST_CODE_DISABLE,
-            disableIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        
-        alarmManager.cancel(enablePendingIntent)
-        alarmManager.cancel(disablePendingIntent)
+        alarmManager.cancel(pendingIntentFor(context, ACTION_ENABLE, REQUEST_CODE_ENABLE))
+        alarmManager.cancel(pendingIntentFor(context, ACTION_DISABLE, REQUEST_CODE_DISABLE))
     }
 }

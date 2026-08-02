@@ -8,37 +8,21 @@ object GrayscaleController {
     private const val DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled"
     private const val DALTONIZER_MODE = "accessibility_display_daltonizer"
     
-    // Grayscale mode value (0 = monochromacy/grayscale)
-    private const val MODE_GRAYSCALE = 0
+    // Grayscale mode value (12 = monochromacy/grayscale on most devices)
+    private const val MODE_GRAYSCALE = 12
     
-    fun enableGrayscale(context: Context): Boolean {
+    fun setGrayscale(context: Context, enabled: Boolean): Boolean {
         return try {
-            val contentResolver = context.contentResolver
-            Settings.Secure.putInt(contentResolver, DALTONIZER_ENABLED, 1)
-            Settings.Secure.putInt(contentResolver, DALTONIZER_MODE, MODE_GRAYSCALE)
+            val cr = context.contentResolver
+            if (enabled) {
+                Settings.Secure.putInt(cr, DALTONIZER_ENABLED, 1)
+                Settings.Secure.putInt(cr, DALTONIZER_MODE, MODE_GRAYSCALE)
+            } else {
+                Settings.Secure.putInt(cr, DALTONIZER_ENABLED, 0)
+            }
             true
         } catch (e: Exception) {
             e.printStackTrace()
-            false
-        }
-    }
-    
-    fun disableGrayscale(context: Context): Boolean {
-        return try {
-            val contentResolver = context.contentResolver
-            Settings.Secure.putInt(contentResolver, DALTONIZER_ENABLED, 0)
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-    
-    fun isGrayscaleEnabled(context: Context): Boolean {
-        return try {
-            val contentResolver = context.contentResolver
-            Settings.Secure.getInt(contentResolver, DALTONIZER_ENABLED, 0) == 1
-        } catch (e: Exception) {
             false
         }
     }
