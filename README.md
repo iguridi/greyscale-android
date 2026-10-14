@@ -3,8 +3,9 @@
 Android app that automatically toggles grayscale mode on your Motorola Stylus based on a schedule.
 
 ## Schedule
-- **Sunday - Thursday at 8:00 PM**: Grayscale ON
-- **Monday - Friday at 6:00 AM**: Grayscale OFF
+- **Sunday - Thursday at 9:00 PM (phone local time)**: Grayscale ON
+- **Monday - Friday at 5:00 AM (phone local time)**: Grayscale OFF
+- **Friday and Saturday nights**: No scheduled grayscale
 
 ## Setup
 
@@ -43,3 +44,10 @@ Alarms are scheduled using `AlarmManager` and persist across app restarts. The `
 ```
 
 The APK will be in `app/build/outputs/apk/debug/`
+
+## Device verification (2026-10-14)
+
+- Built `assembleDebug` with Homebrew OpenJDK 17.0.20 and installed the APK on the connected moto g stylus (2025). Installed APK SHA-256 matched the build (`1213d7fbd8c42ce12931e1bcd00e7d7e184c40d9c545cd2b644a5f611b31c228`).
+- In the phone's `America/Los_Angeles` time zone, `dumpsys alarm` showed the next ENABLE alarm at Wednesday 9:00 PM and DISABLE at Thursday 5:00 AM. The receiver's day guards remain Sunday–Thursday for ENABLE and Monday–Friday for DISABLE.
+- Sent both receiver actions as the app UID (`run-as`), since the receiver is not exported. ENABLE set `accessibility_display_daltonizer_enabled` to `1` with mode `0`; DISABLE restored enabled to its prior value `0`, with mode still `0`. No Digital Wellbeing settings were changed.
+- After unlocking the phone, launched the app and verified its visible schedule: `Sun - Thu / 9:00 PM / Greyscale ON` and `Mon - Fri / 5:00 AM / Greyscale OFF`.

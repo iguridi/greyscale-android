@@ -163,8 +163,8 @@ fun ScheduleInfoCard() {
             
             Spacer(modifier = Modifier.height(12.dp))
             
-            ScheduleRow(day = "Sun - Thu", time = "8:00 PM", action = "Greyscale ON")
-            ScheduleRow(day = "Mon - Fri", time = "6:00 AM", action = "Greyscale OFF")
+            ScheduleRow(day = "Sun - Thu", time = "9:00 PM", action = "Greyscale ON")
+            ScheduleRow(day = "Mon - Fri", time = "5:00 AM", action = "Greyscale OFF")
         }
     }
 }

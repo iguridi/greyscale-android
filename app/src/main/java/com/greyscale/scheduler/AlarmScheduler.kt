@@ -15,8 +15,8 @@ object AlarmScheduler {
     private const val REQUEST_CODE_DISABLE = 1002
     
     fun scheduleAllAlarms(context: Context) {
-        scheduleAlarm(context, 20, 0, ACTION_ENABLE, REQUEST_CODE_ENABLE)
-        scheduleAlarm(context, 6, 0, ACTION_DISABLE, REQUEST_CODE_DISABLE)
+        scheduleAlarm(context, 21, 0, ACTION_ENABLE, REQUEST_CODE_ENABLE)
+        scheduleAlarm(context, 5, 0, ACTION_DISABLE, REQUEST_CODE_DISABLE)
     }
     
     private fun scheduleAlarm(context: Context, hour: Int, minute: Int, action: String, requestCode: Int) {
